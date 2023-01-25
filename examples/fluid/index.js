@@ -19,6 +19,7 @@ function main({ pane, contextID, glslVersion }) {
     canvasZoom: 1,
   };
 
+  let shouldDraw = false;
   // Scaling factor for touch interactions.
   const TOUCH_FORCE_SCALE = 2;
   // Approx avg num particles per px.
@@ -555,7 +556,11 @@ function main({ pane, contextID, glslVersion }) {
 
   // Touch events.
   const activeTouches = {};
+  function onPointerDown(e) {
+    shouldDraw = true;
+  }
   function onPointerMove(e) {
+    if (!shouldDraw) return
     const x = e.clientX * PARAMS.canvasZoom;
     const y = e.clientY * PARAMS.canvasZoom;
     if (activeTouches[e.pointerId] === undefined) {
@@ -583,9 +588,11 @@ function main({ pane, contextID, glslVersion }) {
     });
   }
   function onPointerStop(e) {
+    shouldDraw = false;
     delete activeTouches[e.pointerId];
   }
   canvas.addEventListener('pointermove', onPointerMove);
+  canvas.addEventListener('pointerdown', onPointerDown);
   canvas.addEventListener('pointerup', onPointerStop);
   canvas.addEventListener('pointerout', onPointerStop);
   canvas.addEventListener('pointercancel', onPointerStop);
@@ -666,6 +673,7 @@ function main({ pane, contextID, glslVersion }) {
     document.body.removeChild(canvas);
     window.removeEventListener('keydown', onKeydown);
     window.removeEventListener('resize', onResize);
+    canvas.removeEventListener('pointerdown', onPointerDown);
     canvas.removeEventListener('pointermove', onPointerMove);
     canvas.removeEventListener('pointerup', onPointerStop);
     canvas.removeEventListener('pointerout', onPointerStop);
