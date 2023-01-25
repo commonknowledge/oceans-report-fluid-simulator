@@ -48,7 +48,7 @@ function main({ pane, contextID, glslVersion }) {
   document.body.appendChild(canvas);
 
   function calcNumParticles(width, height) {
-		return Math.min(Math.ceil(width * height * ( PARTICLE_DENSITY)), MAX_NUM_PARTICLES);
+    return Math.min(Math.ceil(width * height * (PARTICLE_DENSITY)), MAX_NUM_PARTICLES);
   }
   let NUM_PARTICLES = calcNumParticles(canvas.width, canvas.height);
 
@@ -515,7 +515,7 @@ function main({ pane, contextID, glslVersion }) {
       });
     }
     if (shouldSavePNG) {
-			composer.savePNG({ filename: `fluid` });
+      composer.savePNG({ filename: `fluid`, dpi: 300 });
       shouldSavePNG = false;
     }
   }
