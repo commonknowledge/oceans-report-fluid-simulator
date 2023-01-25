@@ -4,7 +4,7 @@ import { GLSLVersion } from './constants';
  * Note: there is no positive lookbehind support in some browsers, use capturing parens instead.
  * https://stackoverflow.com/questions/3569104/positive-look-behind-in-javascript-regular-expression/3569116#3569116
  */
-declare type GLSLType = 'float' | 'int' | 'uint' | 'vec2' | 'vec3' | 'vec4' | 'ivec2' | 'ivec3' | 'ivec4' | 'uvec2' | 'uvec3' | 'uvec4';
+type GLSLType = 'float' | 'int' | 'uint' | 'vec2' | 'vec3' | 'vec4' | 'ivec2' | 'ivec3' | 'ivec4' | 'uvec2' | 'uvec3' | 'uvec4';
 /**
  * Convert vertex shader "in" to "attribute".
  * @private

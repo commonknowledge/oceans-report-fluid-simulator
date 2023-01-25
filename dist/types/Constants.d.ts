@@ -58,7 +58,7 @@ export declare const REPEAT = "REPEAT";
 /**
  * GPULayer array types.
  */
-export declare type GPULayerArray = Float32Array | Uint8Array | Int8Array | Uint16Array | Int16Array | Uint32Array | Int32Array;
+export type GPULayerArray = Float32Array | Uint8Array | Int8Array | Uint16Array | Int16Array | Uint32Array | Int32Array;
 /**
  * @private
  */
@@ -66,7 +66,7 @@ export declare const validArrayTypes: (Float32ArrayConstructor | Uint16ArrayCons
 /**
  * GPULayer data types.
  */
-export declare type GPULayerType = typeof HALF_FLOAT | typeof FLOAT | typeof UNSIGNED_BYTE | typeof BYTE | typeof UNSIGNED_SHORT | typeof SHORT | typeof UNSIGNED_INT | typeof INT;
+export type GPULayerType = typeof HALF_FLOAT | typeof FLOAT | typeof UNSIGNED_BYTE | typeof BYTE | typeof UNSIGNED_SHORT | typeof SHORT | typeof UNSIGNED_INT | typeof INT;
 /**
  * @private
  */
@@ -74,11 +74,11 @@ export declare const validDataTypes: string[];
 /**
  * GPULayer numComponents options.
  */
-export declare type GPULayerNumComponents = 1 | 2 | 3 | 4;
+export type GPULayerNumComponents = 1 | 2 | 3 | 4;
 /**
  * GPULayer filter/interpolation types.
  */
-export declare type GPULayerFilter = typeof LINEAR | typeof NEAREST;
+export type GPULayerFilter = typeof LINEAR | typeof NEAREST;
 /**
  * @private
  */
@@ -89,7 +89,7 @@ export declare const validFilters: string[];
 /**
  * GPULayer wrap types.
  */
-export declare type GPULayerWrap = typeof REPEAT | typeof CLAMP_TO_EDGE;
+export type GPULayerWrap = typeof REPEAT | typeof CLAMP_TO_EDGE;
 /**
  * @private
  */
@@ -98,7 +98,7 @@ export declare const validWraps: string[];
  * The WebGLTexture corresponding to a GPULayer buffer (e.g. currentState or lastState).
  * This data structure also includes a reference back to the GPULayer that it originated from.
  */
-export declare type GPULayerState = {
+export type GPULayerState = {
     texture: WebGLTexture;
     layer: GPULayer;
 };
@@ -113,11 +113,11 @@ export declare const RGBA = "RGBA";
 /**
  * Image formats for GPULayer.initFromImage().
  */
-export declare type ImageFormat = typeof RGB | typeof RGBA;
+export type ImageFormat = typeof RGB | typeof RGBA;
 /**
  * Image types for GPULayer.initFromImage().
  */
-export declare type ImageType = typeof UNSIGNED_BYTE | typeof FLOAT | typeof HALF_FLOAT;
+export type ImageType = typeof UNSIGNED_BYTE | typeof FLOAT | typeof HALF_FLOAT;
 /**
  * @private
  */
@@ -137,7 +137,7 @@ export declare const GLSL1 = "100";
 /**
  * GLSL available versions.
  */
-export declare type GLSLVersion = typeof GLSL1 | typeof GLSL3;
+export type GLSLVersion = typeof GLSL1 | typeof GLSL3;
 /**
  * WebGL2 context ID.
  */
@@ -169,7 +169,7 @@ export declare const PRECISION_HIGH_P = "highp";
 /**
  * GLSL available precision declarations.
  */
-export declare type GLSLPrecision = typeof PRECISION_LOW_P | typeof PRECISION_MEDIUM_P | typeof PRECISION_HIGH_P;
+export type GLSLPrecision = typeof PRECISION_LOW_P | typeof PRECISION_MEDIUM_P | typeof PRECISION_HIGH_P;
 /**
  * @private
  */
@@ -237,19 +237,19 @@ export declare const BOOL_4D_UNIFORM = "BOOL_4D_UNIFORM";
 /**
  * GPUProgram uniform types.
  */
-export declare type UniformType = typeof FLOAT | typeof INT | typeof UINT | typeof BOOL;
+export type UniformType = typeof FLOAT | typeof INT | typeof UINT | typeof BOOL;
 /**
  * @private
  */
-export declare type UniformInternalType = typeof BOOL_1D_UNIFORM | typeof BOOL_2D_UNIFORM | typeof BOOL_3D_UNIFORM | typeof BOOL_4D_UNIFORM | typeof FLOAT_1D_UNIFORM | typeof FLOAT_2D_UNIFORM | typeof FLOAT_3D_UNIFORM | typeof FLOAT_4D_UNIFORM | typeof INT_1D_UNIFORM | typeof INT_2D_UNIFORM | typeof INT_3D_UNIFORM | typeof INT_4D_UNIFORM | typeof UINT_1D_UNIFORM | typeof UINT_2D_UNIFORM | typeof UINT_3D_UNIFORM | typeof UINT_4D_UNIFORM;
+export type UniformInternalType = typeof BOOL_1D_UNIFORM | typeof BOOL_2D_UNIFORM | typeof BOOL_3D_UNIFORM | typeof BOOL_4D_UNIFORM | typeof FLOAT_1D_UNIFORM | typeof FLOAT_2D_UNIFORM | typeof FLOAT_3D_UNIFORM | typeof FLOAT_4D_UNIFORM | typeof INT_1D_UNIFORM | typeof INT_2D_UNIFORM | typeof INT_3D_UNIFORM | typeof INT_4D_UNIFORM | typeof UINT_1D_UNIFORM | typeof UINT_2D_UNIFORM | typeof UINT_3D_UNIFORM | typeof UINT_4D_UNIFORM;
 /**
  * GPUProgram uniform values.
  */
-export declare type UniformValue = boolean | boolean[] | number | number[];
+export type UniformValue = boolean | boolean[] | number | number[];
 /**
  * GPUProgram uniform parameters.
  */
-export declare type UniformParams = {
+export type UniformParams = {
     name: string;
     value: UniformValue;
     type: UniformType;
@@ -257,7 +257,7 @@ export declare type UniformParams = {
 /**
  * @private
  */
-export declare type Uniform = {
+export type Uniform = {
     location: WeakMap<WebGLProgram, WebGLUniformLocation>;
     value: UniformValue;
     type: UniformInternalType;
@@ -313,14 +313,14 @@ export declare const GPUIO_VS_POSITION_W_ACCUM = "GPUIO_VS_POSITION_W_ACCUM";
 /**
  * @private
  */
-export declare type PROGRAM_NAME_INTERNAL = typeof DEFAULT_PROGRAM_NAME | typeof SEGMENT_PROGRAM_NAME | typeof LAYER_POINTS_PROGRAM_NAME | typeof LAYER_LINES_PROGRAM_NAME | typeof LAYER_VECTOR_FIELD_PROGRAM_NAME | typeof LAYER_MESH_PROGRAM_NAME;
+export type PROGRAM_NAME_INTERNAL = typeof DEFAULT_PROGRAM_NAME | typeof SEGMENT_PROGRAM_NAME | typeof LAYER_POINTS_PROGRAM_NAME | typeof LAYER_LINES_PROGRAM_NAME | typeof LAYER_VECTOR_FIELD_PROGRAM_NAME | typeof LAYER_MESH_PROGRAM_NAME;
 /**
  * Object containing compile time #define constants for GPUProgram fragment shader.
  */
-export declare type CompileTimeConstants = {
+export type CompileTimeConstants = {
     [key: string]: string;
 };
-export declare type ErrorCallback = (message: string) => void;
+export type ErrorCallback = (message: string) => void;
 /**
  * @private
  */
@@ -405,4 +405,4 @@ export declare const BOUNDARY_TOP = "BOUNDARY_TOP";
 export declare const BOUNDARY_BOTTOM = "BOUNDARY_BOTTOM";
 export declare const BOUNDARY_LEFT = "BOUNDARY_LEFT";
 export declare const BOUNDARY_RIGHT = "BOUNDARY_RIGHT";
-export declare type BoundaryEdge = typeof BOUNDARY_TOP | typeof BOUNDARY_BOTTOM | typeof BOUNDARY_LEFT | typeof BOUNDARY_RIGHT;
+export type BoundaryEdge = typeof BOUNDARY_TOP | typeof BOUNDARY_BOTTOM | typeof BOUNDARY_LEFT | typeof BOUNDARY_RIGHT;

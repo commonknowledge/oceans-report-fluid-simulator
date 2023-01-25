@@ -398,6 +398,7 @@ exports.GPUComposer = void 0;
 var changedpi_1 = __webpack_require__(809);
 var type_checks_1 = __webpack_require__(566);
 var GPULayer_1 = __webpack_require__(355);
+var file_saver_1 = __webpack_require__(162);
 __webpack_require__(191);
 var constants_1 = __webpack_require__(601);
 var ThreejsUtils = __webpack_require__(404);
@@ -2077,7 +2078,7 @@ var GPUComposer = /** @class */ (function () {
         (0, checks_1.checkValidKeys)(keys, validKeys, 'GPUComposer.savePNG(params)');
         var canvas = this.canvas;
         var filename = params.filename || 'output';
-        var callback = params.callback || saveAs; // Default to saving the image with file-saver.
+        var callback = params.callback || file_saver_1.saveAs; // Default to saving the image with file-saver.
         // TODO: need to adjust the canvas size to get the correct px ratio from toBlob().
         // const ratio = window.devicePixelRatio || 1;
         canvas.toBlob(function (blob) {
@@ -2085,6 +2086,7 @@ var GPUComposer = /** @class */ (function () {
                 console.warn("Problem saving PNG, unable to init blob from canvas.");
                 return;
             }
+            console.log(params);
             if (params.dpi) {
                 (0, changedpi_1.changeDpiBlob)(blob, params.dpi).then(function (blob) {
                     callback(blob, "".concat(filename, ".png"));
@@ -2363,7 +2365,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -6896,7 +6898,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -7616,17 +7618,12 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.getFloat16 = getFloat16;
 exports.setFloat16 = setFloat16;
-
 var _arrayIterator = __webpack_require__(802);
-
 var _converter = __webpack_require__(605);
-
 var _primordials = __webpack_require__(983);
-
 function getFloat16(dataView, byteOffset, ...opts) {
   return (0, _converter.convertToNumber)((0, _primordials.DataViewPrototypeGetUint16)(dataView, byteOffset, ...(0, _arrayIterator.safeIfNeeded)(opts)));
 }
-
 function setFloat16(dataView, byteOffset, value, ...opts) {
   return (0, _primordials.DataViewPrototypeSetUint16)(dataView, byteOffset, (0, _converter.roundToFloat16Bits)(value), ...(0, _arrayIterator.safeIfNeeded)(opts));
 }
@@ -7643,185 +7640,136 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.isFloat16Array = isFloat16Array;
-
 var _arrayIterator = __webpack_require__(802);
-
 var _brand = __webpack_require__(299);
-
 var _converter = __webpack_require__(605);
-
 var _is = __webpack_require__(554);
-
 var _messages = __webpack_require__(930);
-
 var _primordials = __webpack_require__(983);
-
 var _spec = __webpack_require__(700);
-
 const BYTES_PER_ELEMENT = 2;
 const float16bitsArrays = new _primordials.NativeWeakMap();
-
 function isFloat16Array(target) {
   return (0, _primordials.WeakMapPrototypeHas)(float16bitsArrays, target) || !(0, _primordials.ArrayBufferIsView)(target) && (0, _brand.hasFloat16ArrayBrand)(target);
 }
-
 function assertFloat16Array(target) {
   if (!isFloat16Array(target)) {
     throw (0, _primordials.NativeTypeError)(_messages.THIS_IS_NOT_A_FLOAT16ARRAY_OBJECT);
   }
 }
-
 function assertSpeciesTypedArray(target, count) {
   const isTargetFloat16Array = isFloat16Array(target);
   const isTargetTypedArray = (0, _is.isNativeTypedArray)(target);
-
   if (!isTargetFloat16Array && !isTargetTypedArray) {
     throw (0, _primordials.NativeTypeError)(_messages.SPECIES_CONSTRUCTOR_DIDNT_RETURN_TYPEDARRAY_OBJECT);
   }
-
   if (typeof count === "number") {
     let length;
-
     if (isTargetFloat16Array) {
       const float16bitsArray = getFloat16BitsArray(target);
       length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     } else {
       length = (0, _primordials.TypedArrayPrototypeGetLength)(target);
     }
-
     if (length < count) {
       throw (0, _primordials.NativeTypeError)(_messages.DERIVED_CONSTRUCTOR_CREATED_TYPEDARRAY_OBJECT_WHICH_WAS_TOO_SMALL_LENGTH);
     }
   }
-
   if ((0, _is.isNativeBigIntTypedArray)(target)) {
     throw (0, _primordials.NativeTypeError)(_messages.CANNOT_MIX_BIGINT_AND_OTHER_TYPES);
   }
 }
-
 function getFloat16BitsArray(float16) {
   const float16bitsArray = (0, _primordials.WeakMapPrototypeGet)(float16bitsArrays, float16);
-
   if (float16bitsArray !== undefined) {
     const buffer = (0, _primordials.TypedArrayPrototypeGetBuffer)(float16bitsArray);
-
     if ((0, _spec.IsDetachedBuffer)(buffer)) {
       throw (0, _primordials.NativeTypeError)(_messages.ATTEMPTING_TO_ACCESS_DETACHED_ARRAYBUFFER);
     }
-
     return float16bitsArray;
   }
-
   const buffer = float16.buffer;
-
   if ((0, _spec.IsDetachedBuffer)(buffer)) {
     throw (0, _primordials.NativeTypeError)(_messages.ATTEMPTING_TO_ACCESS_DETACHED_ARRAYBUFFER);
   }
-
   const cloned = (0, _primordials.ReflectConstruct)(Float16Array, [buffer, float16.byteOffset, float16.length], float16.constructor);
   return (0, _primordials.WeakMapPrototypeGet)(float16bitsArrays, cloned);
 }
-
 function copyToArray(float16bitsArray) {
   const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
   const array = [];
-
   for (let i = 0; i < length; ++i) {
     array[i] = (0, _converter.convertToNumber)(float16bitsArray[i]);
   }
-
   return array;
 }
-
 const TypedArrayPrototypeGetters = new _primordials.NativeWeakSet();
-
 for (const key of (0, _primordials.ReflectOwnKeys)(_primordials.TypedArrayPrototype)) {
   if (key === _primordials.SymbolToStringTag) {
     continue;
   }
-
   const descriptor = (0, _primordials.ReflectGetOwnPropertyDescriptor)(_primordials.TypedArrayPrototype, key);
-
   if ((0, _primordials.ObjectHasOwn)(descriptor, "get") && typeof descriptor.get === "function") {
     (0, _primordials.WeakSetPrototypeAdd)(TypedArrayPrototypeGetters, descriptor.get);
   }
 }
-
 const handler = (0, _primordials.ObjectFreeze)({
   get(target, key, receiver) {
     if ((0, _is.isCanonicalIntegerIndexString)(key) && (0, _primordials.ObjectHasOwn)(target, key)) {
       return (0, _converter.convertToNumber)((0, _primordials.ReflectGet)(target, key));
     }
-
     if ((0, _primordials.WeakSetPrototypeHas)(TypedArrayPrototypeGetters, (0, _primordials.ObjectPrototype__lookupGetter__)(target, key))) {
       return (0, _primordials.ReflectGet)(target, key);
     }
-
     return (0, _primordials.ReflectGet)(target, key, receiver);
   },
-
   set(target, key, value, receiver) {
     if ((0, _is.isCanonicalIntegerIndexString)(key) && (0, _primordials.ObjectHasOwn)(target, key)) {
       return (0, _primordials.ReflectSet)(target, key, (0, _converter.roundToFloat16Bits)(value));
     }
-
     return (0, _primordials.ReflectSet)(target, key, value, receiver);
   },
-
   getOwnPropertyDescriptor(target, key) {
     if ((0, _is.isCanonicalIntegerIndexString)(key) && (0, _primordials.ObjectHasOwn)(target, key)) {
       const descriptor = (0, _primordials.ReflectGetOwnPropertyDescriptor)(target, key);
       descriptor.value = (0, _converter.convertToNumber)(descriptor.value);
       return descriptor;
     }
-
     return (0, _primordials.ReflectGetOwnPropertyDescriptor)(target, key);
   },
-
   defineProperty(target, key, descriptor) {
     if ((0, _is.isCanonicalIntegerIndexString)(key) && (0, _primordials.ObjectHasOwn)(target, key) && (0, _primordials.ObjectHasOwn)(descriptor, "value")) {
       descriptor.value = (0, _converter.roundToFloat16Bits)(descriptor.value);
       return (0, _primordials.ReflectDefineProperty)(target, key, descriptor);
     }
-
     return (0, _primordials.ReflectDefineProperty)(target, key, descriptor);
   }
-
 });
-
 class Float16Array {
   constructor(input, _byteOffset, _length) {
     let float16bitsArray;
-
     if (isFloat16Array(input)) {
       float16bitsArray = (0, _primordials.ReflectConstruct)(_primordials.NativeUint16Array, [getFloat16BitsArray(input)], new.target);
     } else if ((0, _is.isObject)(input) && !(0, _is.isArrayBuffer)(input)) {
       let list;
       let length;
-
       if ((0, _is.isNativeTypedArray)(input)) {
         list = input;
         length = (0, _primordials.TypedArrayPrototypeGetLength)(input);
         const buffer = (0, _primordials.TypedArrayPrototypeGetBuffer)(input);
-        const BufferConstructor = !(0, _is.isSharedArrayBuffer)(buffer) ? (0, _spec.SpeciesConstructor)(buffer, _primordials.NativeArrayBuffer) : _primordials.NativeArrayBuffer;
-
         if ((0, _spec.IsDetachedBuffer)(buffer)) {
           throw (0, _primordials.NativeTypeError)(_messages.ATTEMPTING_TO_ACCESS_DETACHED_ARRAYBUFFER);
         }
-
         if ((0, _is.isNativeBigIntTypedArray)(input)) {
           throw (0, _primordials.NativeTypeError)(_messages.CANNOT_MIX_BIGINT_AND_OTHER_TYPES);
         }
-
-        const data = new BufferConstructor(length * BYTES_PER_ELEMENT);
+        const data = new _primordials.NativeArrayBuffer(length * BYTES_PER_ELEMENT);
         float16bitsArray = (0, _primordials.ReflectConstruct)(_primordials.NativeUint16Array, [data], new.target);
       } else {
         const iterator = input[_primordials.SymbolIterator];
-
         if (iterator != null && typeof iterator !== "function") {
           throw (0, _primordials.NativeTypeError)(_messages.ITERATOR_PROPERTY_IS_NOT_CALLABLE);
         }
-
         if (iterator != null) {
           if ((0, _is.isOrdinaryArray)(input)) {
             list = input;
@@ -7834,55 +7782,44 @@ class Float16Array {
           list = input;
           length = (0, _spec.ToLength)(list.length);
         }
-
         float16bitsArray = (0, _primordials.ReflectConstruct)(_primordials.NativeUint16Array, [length], new.target);
       }
-
       for (let i = 0; i < length; ++i) {
         float16bitsArray[i] = (0, _converter.roundToFloat16Bits)(list[i]);
       }
     } else {
       float16bitsArray = (0, _primordials.ReflectConstruct)(_primordials.NativeUint16Array, arguments, new.target);
     }
-
     const proxy = new _primordials.NativeProxy(float16bitsArray, handler);
     (0, _primordials.WeakMapPrototypeSet)(float16bitsArrays, proxy, float16bitsArray);
     return proxy;
   }
-
   static from(src, ...opts) {
     const Constructor = this;
-
     if (!(0, _primordials.ReflectHas)(Constructor, _brand.brand)) {
       throw (0, _primordials.NativeTypeError)(_messages.THIS_CONSTRUCTOR_IS_NOT_A_SUBCLASS_OF_FLOAT16ARRAY);
     }
-
     if (Constructor === Float16Array) {
       if (isFloat16Array(src) && opts.length === 0) {
         const float16bitsArray = getFloat16BitsArray(src);
         const uint16 = new _primordials.NativeUint16Array((0, _primordials.TypedArrayPrototypeGetBuffer)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetByteOffset)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray));
         return new Float16Array((0, _primordials.TypedArrayPrototypeGetBuffer)((0, _primordials.TypedArrayPrototypeSlice)(uint16)));
       }
-
       if (opts.length === 0) {
         return new Float16Array((0, _primordials.TypedArrayPrototypeGetBuffer)((0, _primordials.Uint16ArrayFrom)(src, _converter.roundToFloat16Bits)));
       }
-
       const mapFunc = opts[0];
       const thisArg = opts[1];
       return new Float16Array((0, _primordials.TypedArrayPrototypeGetBuffer)((0, _primordials.Uint16ArrayFrom)(src, function (val, ...args) {
         return (0, _converter.roundToFloat16Bits)((0, _primordials.ReflectApply)(mapFunc, this, [val, ...(0, _arrayIterator.safeIfNeeded)(args)]));
       }, thisArg)));
     }
-
     let list;
     let length;
     const iterator = src[_primordials.SymbolIterator];
-
     if (iterator != null && typeof iterator !== "function") {
       throw (0, _primordials.NativeTypeError)(_messages.ITERATOR_PROPERTY_IS_NOT_CALLABLE);
     }
-
     if (iterator != null) {
       if ((0, _is.isOrdinaryArray)(src)) {
         list = src;
@@ -7898,13 +7835,10 @@ class Float16Array {
       if (src == null) {
         throw (0, _primordials.NativeTypeError)(_messages.CANNOT_CONVERT_UNDEFINED_OR_NULL_TO_OBJECT);
       }
-
       list = (0, _primordials.NativeObject)(src);
       length = (0, _spec.ToLength)(list.length);
     }
-
     const array = new Constructor(length);
-
     if (opts.length === 0) {
       for (let i = 0; i < length; ++i) {
         array[i] = list[i];
@@ -7912,50 +7846,37 @@ class Float16Array {
     } else {
       const mapFunc = opts[0];
       const thisArg = opts[1];
-
       for (let i = 0; i < length; ++i) {
         array[i] = (0, _primordials.ReflectApply)(mapFunc, thisArg, [list[i], i]);
       }
     }
-
     return array;
   }
-
   static of(...items) {
     const Constructor = this;
-
     if (!(0, _primordials.ReflectHas)(Constructor, _brand.brand)) {
       throw (0, _primordials.NativeTypeError)(_messages.THIS_CONSTRUCTOR_IS_NOT_A_SUBCLASS_OF_FLOAT16ARRAY);
     }
-
     const length = items.length;
-
     if (Constructor === Float16Array) {
       const proxy = new Float16Array(length);
       const float16bitsArray = getFloat16BitsArray(proxy);
-
       for (let i = 0; i < length; ++i) {
         float16bitsArray[i] = (0, _converter.roundToFloat16Bits)(items[i]);
       }
-
       return proxy;
     }
-
     const array = new Constructor(length);
-
     for (let i = 0; i < length; ++i) {
       array[i] = items[i];
     }
-
     return array;
   }
-
   keys() {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     return (0, _primordials.TypedArrayPrototypeKeys)(float16bitsArray);
   }
-
   values() {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
@@ -7965,7 +7886,6 @@ class Float16Array {
       }
     }());
   }
-
   entries() {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
@@ -7975,83 +7895,81 @@ class Float16Array {
       }
     }());
   }
-
   at(index) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const relativeIndex = (0, _spec.ToIntegerOrInfinity)(index);
     const k = relativeIndex >= 0 ? relativeIndex : length + relativeIndex;
-
     if (k < 0 || k >= length) {
       return;
     }
-
     return (0, _converter.convertToNumber)(float16bitsArray[k]);
   }
-
+  with(index, value) {
+    assertFloat16Array(this);
+    const float16bitsArray = getFloat16BitsArray(this);
+    const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
+    const relativeIndex = (0, _spec.ToIntegerOrInfinity)(index);
+    const k = relativeIndex >= 0 ? relativeIndex : length + relativeIndex;
+    const number = +value;
+    if (k < 0 || k >= length) {
+      throw (0, _primordials.NativeRangeError)(_messages.OFFSET_IS_OUT_OF_BOUNDS);
+    }
+    const uint16 = new _primordials.NativeUint16Array((0, _primordials.TypedArrayPrototypeGetBuffer)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetByteOffset)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray));
+    const cloned = new Float16Array((0, _primordials.TypedArrayPrototypeGetBuffer)((0, _primordials.TypedArrayPrototypeSlice)(uint16)));
+    const array = getFloat16BitsArray(cloned);
+    array[k] = (0, _converter.roundToFloat16Bits)(number);
+    return cloned;
+  }
   map(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
     const Constructor = (0, _spec.SpeciesConstructor)(float16bitsArray, Float16Array);
-
     if (Constructor === Float16Array) {
       const proxy = new Float16Array(length);
       const array = getFloat16BitsArray(proxy);
-
       for (let i = 0; i < length; ++i) {
         const val = (0, _converter.convertToNumber)(float16bitsArray[i]);
         array[i] = (0, _converter.roundToFloat16Bits)((0, _primordials.ReflectApply)(callback, thisArg, [val, i, this]));
       }
-
       return proxy;
     }
-
     const array = new Constructor(length);
     assertSpeciesTypedArray(array, length);
-
     for (let i = 0; i < length; ++i) {
       const val = (0, _converter.convertToNumber)(float16bitsArray[i]);
       array[i] = (0, _primordials.ReflectApply)(callback, thisArg, [val, i, this]);
     }
-
     return array;
   }
-
   filter(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
     const kept = [];
-
     for (let i = 0; i < length; ++i) {
       const val = (0, _converter.convertToNumber)(float16bitsArray[i]);
-
       if ((0, _primordials.ReflectApply)(callback, thisArg, [val, i, this])) {
         (0, _primordials.ArrayPrototypePush)(kept, val);
       }
     }
-
     const Constructor = (0, _spec.SpeciesConstructor)(float16bitsArray, Float16Array);
     const array = new Constructor(kept);
     assertSpeciesTypedArray(array);
     return array;
   }
-
   reduce(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
-
     if (length === 0 && opts.length === 0) {
       throw (0, _primordials.NativeTypeError)(_messages.REDUCE_OF_EMPTY_ARRAY_WITH_NO_INITIAL_VALUE);
     }
-
     let accumulator, start;
-
     if (opts.length === 0) {
       accumulator = (0, _converter.convertToNumber)(float16bitsArray[0]);
       start = 1;
@@ -8059,25 +7977,19 @@ class Float16Array {
       accumulator = opts[0];
       start = 0;
     }
-
     for (let i = start; i < length; ++i) {
       accumulator = callback(accumulator, (0, _converter.convertToNumber)(float16bitsArray[i]), i, this);
     }
-
     return accumulator;
   }
-
   reduceRight(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
-
     if (length === 0 && opts.length === 0) {
       throw (0, _primordials.NativeTypeError)(_messages.REDUCE_OF_EMPTY_ARRAY_WITH_NO_INITIAL_VALUE);
     }
-
     let accumulator, start;
-
     if (opts.length === 0) {
       accumulator = (0, _converter.convertToNumber)(float16bitsArray[length - 1]);
       start = length - 2;
@@ -8085,182 +7997,153 @@ class Float16Array {
       accumulator = opts[0];
       start = length - 1;
     }
-
     for (let i = start; i >= 0; --i) {
       accumulator = callback(accumulator, (0, _converter.convertToNumber)(float16bitsArray[i]), i, this);
     }
-
     return accumulator;
   }
-
   forEach(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
-
     for (let i = 0; i < length; ++i) {
       (0, _primordials.ReflectApply)(callback, thisArg, [(0, _converter.convertToNumber)(float16bitsArray[i]), i, this]);
     }
   }
-
   find(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
-
     for (let i = 0; i < length; ++i) {
       const value = (0, _converter.convertToNumber)(float16bitsArray[i]);
-
       if ((0, _primordials.ReflectApply)(callback, thisArg, [value, i, this])) {
         return value;
       }
     }
   }
-
   findIndex(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
-
     for (let i = 0; i < length; ++i) {
       const value = (0, _converter.convertToNumber)(float16bitsArray[i]);
-
       if ((0, _primordials.ReflectApply)(callback, thisArg, [value, i, this])) {
         return i;
       }
     }
-
     return -1;
   }
-
   findLast(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
-
     for (let i = length - 1; i >= 0; --i) {
       const value = (0, _converter.convertToNumber)(float16bitsArray[i]);
-
       if ((0, _primordials.ReflectApply)(callback, thisArg, [value, i, this])) {
         return value;
       }
     }
   }
-
   findLastIndex(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
-
     for (let i = length - 1; i >= 0; --i) {
       const value = (0, _converter.convertToNumber)(float16bitsArray[i]);
-
       if ((0, _primordials.ReflectApply)(callback, thisArg, [value, i, this])) {
         return i;
       }
     }
-
     return -1;
   }
-
   every(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
-
     for (let i = 0; i < length; ++i) {
       if (!(0, _primordials.ReflectApply)(callback, thisArg, [(0, _converter.convertToNumber)(float16bitsArray[i]), i, this])) {
         return false;
       }
     }
-
     return true;
   }
-
   some(callback, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const thisArg = opts[0];
-
     for (let i = 0; i < length; ++i) {
       if ((0, _primordials.ReflectApply)(callback, thisArg, [(0, _converter.convertToNumber)(float16bitsArray[i]), i, this])) {
         return true;
       }
     }
-
     return false;
   }
-
   set(input, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const targetOffset = (0, _spec.ToIntegerOrInfinity)(opts[0]);
-
     if (targetOffset < 0) {
       throw (0, _primordials.NativeRangeError)(_messages.OFFSET_IS_OUT_OF_BOUNDS);
     }
-
     if (input == null) {
       throw (0, _primordials.NativeTypeError)(_messages.CANNOT_CONVERT_UNDEFINED_OR_NULL_TO_OBJECT);
     }
-
     if ((0, _is.isNativeBigIntTypedArray)(input)) {
       throw (0, _primordials.NativeTypeError)(_messages.CANNOT_MIX_BIGINT_AND_OTHER_TYPES);
     }
-
     if (isFloat16Array(input)) {
       return (0, _primordials.TypedArrayPrototypeSet)(getFloat16BitsArray(this), getFloat16BitsArray(input), targetOffset);
     }
-
     if ((0, _is.isNativeTypedArray)(input)) {
       const buffer = (0, _primordials.TypedArrayPrototypeGetBuffer)(input);
-
       if ((0, _spec.IsDetachedBuffer)(buffer)) {
         throw (0, _primordials.NativeTypeError)(_messages.ATTEMPTING_TO_ACCESS_DETACHED_ARRAYBUFFER);
       }
     }
-
     const targetLength = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const src = (0, _primordials.NativeObject)(input);
     const srcLength = (0, _spec.ToLength)(src.length);
-
     if (targetOffset === Infinity || srcLength + targetOffset > targetLength) {
       throw (0, _primordials.NativeRangeError)(_messages.OFFSET_IS_OUT_OF_BOUNDS);
     }
-
     for (let i = 0; i < srcLength; ++i) {
       float16bitsArray[i + targetOffset] = (0, _converter.roundToFloat16Bits)(src[i]);
     }
   }
-
   reverse() {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     (0, _primordials.TypedArrayPrototypeReverse)(float16bitsArray);
     return this;
   }
-
+  toReversed() {
+    assertFloat16Array(this);
+    const float16bitsArray = getFloat16BitsArray(this);
+    const uint16 = new _primordials.NativeUint16Array((0, _primordials.TypedArrayPrototypeGetBuffer)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetByteOffset)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray));
+    const cloned = new Float16Array((0, _primordials.TypedArrayPrototypeGetBuffer)((0, _primordials.TypedArrayPrototypeSlice)(uint16)));
+    const clonedFloat16bitsArray = getFloat16BitsArray(cloned);
+    (0, _primordials.TypedArrayPrototypeReverse)(clonedFloat16bitsArray);
+    return cloned;
+  }
   fill(value, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     (0, _primordials.TypedArrayPrototypeFill)(float16bitsArray, (0, _converter.roundToFloat16Bits)(value), ...(0, _arrayIterator.safeIfNeeded)(opts));
     return this;
   }
-
   copyWithin(target, start, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     (0, _primordials.TypedArrayPrototypeCopyWithin)(float16bitsArray, target, start, ...(0, _arrayIterator.safeIfNeeded)(opts));
     return this;
   }
-
   sort(compareFn) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
@@ -8270,22 +8153,33 @@ class Float16Array {
     });
     return this;
   }
-
+  toSorted(compareFn) {
+    assertFloat16Array(this);
+    const float16bitsArray = getFloat16BitsArray(this);
+    if (compareFn !== undefined && typeof compareFn !== "function") {
+      throw new _primordials.NativeTypeError(_messages.THE_COMPARISON_FUNCTION_MUST_BE_EITHER_A_FUNCTION_OR_UNDEFINED);
+    }
+    const sortCompare = compareFn !== undefined ? compareFn : _spec.defaultCompare;
+    const uint16 = new _primordials.NativeUint16Array((0, _primordials.TypedArrayPrototypeGetBuffer)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetByteOffset)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray));
+    const cloned = new Float16Array((0, _primordials.TypedArrayPrototypeGetBuffer)((0, _primordials.TypedArrayPrototypeSlice)(uint16)));
+    const clonedFloat16bitsArray = getFloat16BitsArray(cloned);
+    (0, _primordials.TypedArrayPrototypeSort)(clonedFloat16bitsArray, (x, y) => {
+      return sortCompare((0, _converter.convertToNumber)(x), (0, _converter.convertToNumber)(y));
+    });
+    return cloned;
+  }
   slice(start, end) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const Constructor = (0, _spec.SpeciesConstructor)(float16bitsArray, Float16Array);
-
     if (Constructor === Float16Array) {
       const uint16 = new _primordials.NativeUint16Array((0, _primordials.TypedArrayPrototypeGetBuffer)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetByteOffset)(float16bitsArray), (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray));
       return new Float16Array((0, _primordials.TypedArrayPrototypeGetBuffer)((0, _primordials.TypedArrayPrototypeSlice)(uint16, start, end)));
     }
-
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     const relativeStart = (0, _spec.ToIntegerOrInfinity)(start);
     const relativeEnd = end === undefined ? length : (0, _spec.ToIntegerOrInfinity)(end);
     let k;
-
     if (relativeStart === -Infinity) {
       k = 0;
     } else if (relativeStart < 0) {
@@ -8293,9 +8187,7 @@ class Float16Array {
     } else {
       k = length < relativeStart ? length : relativeStart;
     }
-
     let final;
-
     if (relativeEnd === -Infinity) {
       final = 0;
     } else if (relativeEnd < 0) {
@@ -8303,32 +8195,24 @@ class Float16Array {
     } else {
       final = length < relativeEnd ? length : relativeEnd;
     }
-
     const count = final - k > 0 ? final - k : 0;
     const array = new Constructor(count);
     assertSpeciesTypedArray(array, count);
-
     if (count === 0) {
       return array;
     }
-
     const buffer = (0, _primordials.TypedArrayPrototypeGetBuffer)(float16bitsArray);
-
     if ((0, _spec.IsDetachedBuffer)(buffer)) {
       throw (0, _primordials.NativeTypeError)(_messages.ATTEMPTING_TO_ACCESS_DETACHED_ARRAYBUFFER);
     }
-
     let n = 0;
-
     while (k < final) {
       array[n] = (0, _converter.convertToNumber)(float16bitsArray[k]);
       ++k;
       ++n;
     }
-
     return array;
   }
-
   subarray(begin, end) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
@@ -8339,116 +8223,91 @@ class Float16Array {
     assertSpeciesTypedArray(array);
     return array;
   }
-
   indexOf(element, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     let from = (0, _spec.ToIntegerOrInfinity)(opts[0]);
-
     if (from === Infinity) {
       return -1;
     }
-
     if (from < 0) {
       from += length;
-
       if (from < 0) {
         from = 0;
       }
     }
-
     for (let i = from; i < length; ++i) {
       if ((0, _primordials.ObjectHasOwn)(float16bitsArray, i) && (0, _converter.convertToNumber)(float16bitsArray[i]) === element) {
         return i;
       }
     }
-
     return -1;
   }
-
   lastIndexOf(element, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     let from = opts.length >= 1 ? (0, _spec.ToIntegerOrInfinity)(opts[0]) : length - 1;
-
     if (from === -Infinity) {
       return -1;
     }
-
     if (from >= 0) {
       from = from < length - 1 ? from : length - 1;
     } else {
       from += length;
     }
-
     for (let i = from; i >= 0; --i) {
       if ((0, _primordials.ObjectHasOwn)(float16bitsArray, i) && (0, _converter.convertToNumber)(float16bitsArray[i]) === element) {
         return i;
       }
     }
-
     return -1;
   }
-
   includes(element, ...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const length = (0, _primordials.TypedArrayPrototypeGetLength)(float16bitsArray);
     let from = (0, _spec.ToIntegerOrInfinity)(opts[0]);
-
     if (from === Infinity) {
       return false;
     }
-
     if (from < 0) {
       from += length;
-
       if (from < 0) {
         from = 0;
       }
     }
-
     const isNaN = (0, _primordials.NumberIsNaN)(element);
-
     for (let i = from; i < length; ++i) {
       const value = (0, _converter.convertToNumber)(float16bitsArray[i]);
-
       if (isNaN && (0, _primordials.NumberIsNaN)(value)) {
         return true;
       }
-
       if (value === element) {
         return true;
       }
     }
-
     return false;
   }
-
   join(separator) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const array = copyToArray(float16bitsArray);
     return (0, _primordials.ArrayPrototypeJoin)(array, separator);
   }
-
   toLocaleString(...opts) {
     assertFloat16Array(this);
     const float16bitsArray = getFloat16BitsArray(this);
     const array = copyToArray(float16bitsArray);
     return (0, _primordials.ArrayPrototypeToLocaleString)(array, ...(0, _arrayIterator.safeIfNeeded)(opts));
   }
-
   get [_primordials.SymbolToStringTag]() {
     if (isFloat16Array(this)) {
       return "Float16Array";
     }
   }
-
 }
-
 exports.Float16Array = Float16Array;
 (0, _primordials.ObjectDefineProperty)(Float16Array, "BYTES_PER_ELEMENT", {
   value: BYTES_PER_ELEMENT
@@ -8479,9 +8338,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.safeIfNeeded = safeIfNeeded;
 exports.wrap = wrap;
-
 var _primordials = __webpack_require__(983);
-
 const arrayIterators = new _primordials.NativeWeakMap();
 const SafeIteratorPrototype = (0, _primordials.ObjectCreate)(null, {
   next: {
@@ -8496,17 +8353,14 @@ const SafeIteratorPrototype = (0, _primordials.ObjectCreate)(null, {
     }
   }
 });
-
 function safeIfNeeded(array) {
-  if (array[_primordials.SymbolIterator] === _primordials.NativeArrayPrototypeSymbolIterator) {
+  if (array[_primordials.SymbolIterator] === _primordials.NativeArrayPrototypeSymbolIterator && _primordials.ArrayIteratorPrototype.next === _primordials.ArrayIteratorPrototypeNext) {
     return array;
   }
-
   const safe = (0, _primordials.ObjectCreate)(SafeIteratorPrototype);
   (0, _primordials.WeakMapPrototypeSet)(arrayIterators, safe, (0, _primordials.ArrayPrototypeSymbolIterator)(array));
   return safe;
 }
-
 const generators = new _primordials.NativeWeakMap();
 const DummyArrayIteratorPrototype = (0, _primordials.ObjectCreate)(_primordials.IteratorPrototype, {
   next: {
@@ -8518,15 +8372,12 @@ const DummyArrayIteratorPrototype = (0, _primordials.ObjectCreate)(_primordials.
     configurable: true
   }
 });
-
 for (const key of (0, _primordials.ReflectOwnKeys)(_primordials.ArrayIteratorPrototype)) {
   if (key === "next") {
     continue;
   }
-
   (0, _primordials.ObjectDefineProperty)(DummyArrayIteratorPrototype, key, (0, _primordials.ReflectGetOwnPropertyDescriptor)(_primordials.ArrayIteratorPrototype, key));
 }
-
 function wrap(generator) {
   const dummy = (0, _primordials.ObjectCreate)(DummyArrayIteratorPrototype);
   (0, _primordials.WeakMapPrototypeSet)(generators, dummy, generator);
@@ -8545,37 +8396,26 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.hasFloat16ArrayBrand = hasFloat16ArrayBrand;
-
 var _is = __webpack_require__(554);
-
 var _messages = __webpack_require__(930);
-
 var _primordials = __webpack_require__(983);
-
 const brand = (0, _primordials.SymbolFor)("__Float16Array__");
 exports.brand = brand;
-
 function hasFloat16ArrayBrand(target) {
   if (!(0, _is.isObjectLike)(target)) {
     return false;
   }
-
   const prototype = (0, _primordials.ReflectGetPrototypeOf)(target);
-
   if (!(0, _is.isObjectLike)(prototype)) {
     return false;
   }
-
   const constructor = prototype.constructor;
-
   if (constructor === undefined) {
     return false;
   }
-
   if (!(0, _is.isObject)(constructor)) {
     throw (0, _primordials.NativeTypeError)(_messages.THE_CONSTRUCTOR_PROPERTY_VALUE_IS_NOT_AN_OBJECT);
   }
-
   return (0, _primordials.ReflectHas)(constructor, brand);
 }
 
@@ -8592,18 +8432,14 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.convertToNumber = convertToNumber;
 exports.roundToFloat16Bits = roundToFloat16Bits;
-
 var _primordials = __webpack_require__(983);
-
 const buffer = new _primordials.NativeArrayBuffer(4);
 const floatView = new _primordials.NativeFloat32Array(buffer);
 const uint32View = new _primordials.NativeUint32Array(buffer);
 const baseTable = new _primordials.NativeUint32Array(512);
 const shiftTable = new _primordials.NativeUint32Array(512);
-
 for (let i = 0; i < 256; ++i) {
   const e = i - 127;
-
   if (e < -27) {
     baseTable[i] = 0x0000;
     baseTable[i | 0x100] = 0x8000;
@@ -8631,55 +8467,43 @@ for (let i = 0; i < 256; ++i) {
     shiftTable[i | 0x100] = 13;
   }
 }
-
 function roundToFloat16Bits(num) {
   floatView[0] = num;
   const f = uint32View[0];
   const e = f >> 23 & 0x1ff;
   return baseTable[e] + ((f & 0x007fffff) >> shiftTable[e]);
 }
-
 const mantissaTable = new _primordials.NativeUint32Array(2048);
 const exponentTable = new _primordials.NativeUint32Array(64);
 const offsetTable = new _primordials.NativeUint32Array(64);
-
 for (let i = 1; i < 1024; ++i) {
   let m = i << 13;
   let e = 0;
-
   while ((m & 0x00800000) === 0) {
     m <<= 1;
     e -= 0x00800000;
   }
-
   m &= ~0x00800000;
   e += 0x38800000;
   mantissaTable[i] = m | e;
 }
-
 for (let i = 1024; i < 2048; ++i) {
   mantissaTable[i] = 0x38000000 + (i - 1024 << 13);
 }
-
 for (let i = 1; i < 31; ++i) {
   exponentTable[i] = i << 23;
 }
-
 exponentTable[31] = 0x47800000;
 exponentTable[32] = 0x80000000;
-
 for (let i = 33; i < 63; ++i) {
   exponentTable[i] = 0x80000000 + (i - 32 << 23);
 }
-
 exponentTable[63] = 0xc7800000;
-
 for (let i = 1; i < 64; ++i) {
   if (i !== 32) {
     offsetTable[i] = 1024;
   }
 }
-
 function convertToNumber(float16bits) {
   const m = float16bits >> 10;
   uint32View[0] = mantissaTable[offsetTable[m] + (float16bits & 0x3ff)] + exponentTable[m];
@@ -8706,26 +8530,20 @@ exports.isObjectLike = isObjectLike;
 exports.isOrdinaryArray = isOrdinaryArray;
 exports.isOrdinaryNativeTypedArray = isOrdinaryNativeTypedArray;
 exports.isSharedArrayBuffer = isSharedArrayBuffer;
-
 var _primordials = __webpack_require__(983);
-
 function isObject(value) {
   return value !== null && typeof value === "object" || typeof value === "function";
 }
-
 function isObjectLike(value) {
   return value !== null && typeof value === "object";
 }
-
 function isNativeTypedArray(value) {
   return (0, _primordials.TypedArrayPrototypeGetSymbolToStringTag)(value) !== undefined;
 }
-
 function isNativeBigIntTypedArray(value) {
   const typedArrayName = (0, _primordials.TypedArrayPrototypeGetSymbolToStringTag)(value);
   return typedArrayName === "BigInt64Array" || typedArrayName === "BigUint64Array";
 }
-
 function isArrayBuffer(value) {
   try {
     (0, _primordials.ArrayBufferPrototypeGetByteLength)(value);
@@ -8734,12 +8552,10 @@ function isArrayBuffer(value) {
     return false;
   }
 }
-
 function isSharedArrayBuffer(value) {
   if (_primordials.NativeSharedArrayBuffer === null) {
     return false;
   }
-
   try {
     (0, _primordials.SharedArrayBufferPrototypeGetByteLength)(value);
     return true;
@@ -8747,50 +8563,29 @@ function isSharedArrayBuffer(value) {
     return false;
   }
 }
-
 function isOrdinaryArray(value) {
   if (!(0, _primordials.ArrayIsArray)(value)) {
     return false;
   }
-
-  if (value[_primordials.SymbolIterator] === _primordials.NativeArrayPrototypeSymbolIterator) {
-    return true;
-  }
-
-  const iterator = value[_primordials.SymbolIterator]();
-
-  return iterator[_primordials.SymbolToStringTag] === "Array Iterator";
+  return value[_primordials.SymbolIterator] === _primordials.NativeArrayPrototypeSymbolIterator && _primordials.ArrayIteratorPrototype.next === _primordials.ArrayIteratorPrototypeNext;
 }
-
 function isOrdinaryNativeTypedArray(value) {
   if (!isNativeTypedArray(value)) {
     return false;
   }
-
-  if (value[_primordials.SymbolIterator] === _primordials.NativeTypedArrayPrototypeSymbolIterator) {
-    return true;
-  }
-
-  const iterator = value[_primordials.SymbolIterator]();
-
-  return iterator[_primordials.SymbolToStringTag] === "Array Iterator";
+  return value[_primordials.SymbolIterator] === _primordials.NativeTypedArrayPrototypeSymbolIterator && _primordials.ArrayIteratorPrototype.next === _primordials.ArrayIteratorPrototypeNext;
 }
-
 function isCanonicalIntegerIndexString(value) {
   if (typeof value !== "string") {
     return false;
   }
-
   const number = +value;
-
   if (value !== number + "") {
     return false;
   }
-
   if (!(0, _primordials.NumberIsFinite)(number)) {
     return false;
   }
-
   return number === (0, _primordials.MathTrunc)(number);
 }
 
@@ -8827,6 +8622,8 @@ const ITERATOR_PROPERTY_IS_NOT_CALLABLE = "@@iterator property is not callable";
 exports.ITERATOR_PROPERTY_IS_NOT_CALLABLE = ITERATOR_PROPERTY_IS_NOT_CALLABLE;
 const REDUCE_OF_EMPTY_ARRAY_WITH_NO_INITIAL_VALUE = "Reduce of empty array with no initial value";
 exports.REDUCE_OF_EMPTY_ARRAY_WITH_NO_INITIAL_VALUE = REDUCE_OF_EMPTY_ARRAY_WITH_NO_INITIAL_VALUE;
+const THE_COMPARISON_FUNCTION_MUST_BE_EITHER_A_FUNCTION_OR_UNDEFINED = "The comparison function must be either a function or undefined";
+exports.THE_COMPARISON_FUNCTION_MUST_BE_EITHER_A_FUNCTION_OR_UNDEFINED = THE_COMPARISON_FUNCTION_MUST_BE_EITHER_A_FUNCTION_OR_UNDEFINED;
 const OFFSET_IS_OUT_OF_BOUNDS = "Offset is out of bounds";
 exports.OFFSET_IS_OUT_OF_BOUNDS = OFFSET_IS_OUT_OF_BOUNDS;
 
@@ -8841,19 +8638,15 @@ exports.OFFSET_IS_OUT_OF_BOUNDS = OFFSET_IS_OUT_OF_BOUNDS;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-
 var _messages = __webpack_require__(930);
-
 function uncurryThis(target) {
   return (thisArg, ...args) => {
     return ReflectApply(target, thisArg, args);
   };
 }
-
 function uncurryThisGetter(target, key) {
   return uncurryThis(ReflectGetOwnPropertyDescriptor(target, key).get);
 }
-
 const {
   apply: ReflectApply,
   construct: ReflectConstruct,
@@ -8879,7 +8672,7 @@ exports.ReflectApply = ReflectApply;
 const NativeProxy = Proxy;
 exports.NativeProxy = NativeProxy;
 const {
-  MAX_SAFE_INTEGER: MAX_SAFE_INTEGER,
+  MAX_SAFE_INTEGER,
   isFinite: NumberIsFinite,
   isNaN: NumberIsNaN
 } = Number;
@@ -8913,17 +8706,13 @@ const ObjectPrototype__lookupGetter__ = ObjectPrototype.__lookupGetter__ ? uncur
   if (object == null) {
     throw NativeTypeError(_messages.CANNOT_CONVERT_UNDEFINED_OR_NULL_TO_OBJECT);
   }
-
   let target = NativeObject(object);
-
   do {
     const descriptor = ReflectGetOwnPropertyDescriptor(target, key);
-
     if (descriptor !== undefined) {
       if (ObjectHasOwn(descriptor, "get")) {
         return descriptor.get;
       }
-
       return;
     }
   } while ((target = ReflectGetPrototypeOf(target)) !== null);
@@ -8997,11 +8786,9 @@ const TypedArrayPrototypeGetSymbolToStringTag = uncurryThisGetter(TypedArrayProt
 exports.TypedArrayPrototypeGetSymbolToStringTag = TypedArrayPrototypeGetSymbolToStringTag;
 const NativeUint16Array = Uint16Array;
 exports.NativeUint16Array = NativeUint16Array;
-
 const Uint16ArrayFrom = (...args) => {
   return ReflectApply(TypedArrayFrom, NativeUint16Array, args);
 };
-
 exports.Uint16ArrayFrom = Uint16ArrayFrom;
 const NativeUint32Array = Uint32Array;
 exports.NativeUint32Array = NativeUint32Array;
@@ -9057,107 +8844,78 @@ exports.SpeciesConstructor = SpeciesConstructor;
 exports.ToIntegerOrInfinity = ToIntegerOrInfinity;
 exports.ToLength = ToLength;
 exports.defaultCompare = defaultCompare;
-
 var _is = __webpack_require__(554);
-
 var _messages = __webpack_require__(930);
-
 var _primordials = __webpack_require__(983);
-
 function ToIntegerOrInfinity(target) {
   const number = +target;
-
   if ((0, _primordials.NumberIsNaN)(number) || number === 0) {
     return 0;
   }
-
   return (0, _primordials.MathTrunc)(number);
 }
-
 function ToLength(target) {
   const length = ToIntegerOrInfinity(target);
-
   if (length < 0) {
     return 0;
   }
-
   return length < _primordials.MAX_SAFE_INTEGER ? length : _primordials.MAX_SAFE_INTEGER;
 }
-
 function SpeciesConstructor(target, defaultConstructor) {
   if (!(0, _is.isObject)(target)) {
     throw (0, _primordials.NativeTypeError)(_messages.THIS_IS_NOT_AN_OBJECT);
   }
-
   const constructor = target.constructor;
-
   if (constructor === undefined) {
     return defaultConstructor;
   }
-
   if (!(0, _is.isObject)(constructor)) {
     throw (0, _primordials.NativeTypeError)(_messages.THE_CONSTRUCTOR_PROPERTY_VALUE_IS_NOT_AN_OBJECT);
   }
-
   const species = constructor[_primordials.SymbolSpecies];
-
   if (species == null) {
     return defaultConstructor;
   }
-
   return species;
 }
-
 function IsDetachedBuffer(buffer) {
   if ((0, _is.isSharedArrayBuffer)(buffer)) {
     return false;
   }
-
   try {
     (0, _primordials.ArrayBufferPrototypeSlice)(buffer, 0, 0);
     return false;
   } catch (e) {}
-
   return true;
 }
-
 function defaultCompare(x, y) {
   const isXNaN = (0, _primordials.NumberIsNaN)(x);
   const isYNaN = (0, _primordials.NumberIsNaN)(y);
-
   if (isXNaN && isYNaN) {
     return 0;
   }
-
   if (isXNaN) {
     return 1;
   }
-
   if (isYNaN) {
     return -1;
   }
-
   if (x < y) {
     return -1;
   }
-
   if (x > y) {
     return 1;
   }
-
   if (x === 0 && y === 0) {
     const isXPlusZero = (0, _primordials.ObjectIs)(x, 0);
     const isYPlusZero = (0, _primordials.ObjectIs)(y, 0);
-
     if (!isXPlusZero && isYPlusZero) {
       return -1;
     }
-
     if (isXPlusZero && !isYPlusZero) {
       return 1;
     }
   }
-
   return 0;
 }
 
@@ -9173,18 +8931,13 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.hfround = hfround;
-
 var _converter = __webpack_require__(605);
-
 var _primordials = __webpack_require__(983);
-
 function hfround(x) {
   const number = +x;
-
   if (!(0, _primordials.NumberIsFinite)(number) || number === 0) {
     return number;
   }
-
   const x16 = (0, _converter.roundToFloat16Bits)(number);
   return (0, _converter.convertToNumber)(x16);
 }
@@ -9200,23 +8953,15 @@ function hfround(x) {
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-
 var _Float16Array = __webpack_require__(310);
-
 exports.Float16Array = _Float16Array.Float16Array;
 exports.isFloat16Array = _Float16Array.isFloat16Array;
-
 var _isTypedArray = __webpack_require__(146);
-
 exports.isTypedArray = _isTypedArray.isTypedArray;
-
 var _DataView = __webpack_require__(557);
-
 exports.getFloat16 = _DataView.getFloat16;
 exports.setFloat16 = _DataView.setFloat16;
-
 var _hfround = __webpack_require__(216);
-
 exports.hfround = _hfround.hfround;
 
 /***/ }),
@@ -9231,11 +8976,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.isTypedArray = isTypedArray;
-
 var _Float16Array = __webpack_require__(310);
-
 var _is = __webpack_require__(554);
-
 function isTypedArray(target) {
   return (0, _is.isNativeTypedArray)(target) || (0, _Float16Array.isFloat16Array)(target);
 }
