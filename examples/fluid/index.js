@@ -1,5 +1,7 @@
 // Main is called from ../common/wrapper.js
-function main({ pane, contextID, glslVersion }) {
+function main({ pane, contextID, glslVersion, canvasZoom }) {
+  const ui = [];
+
   const {
     GPUComposer,
     GPUProgram,
@@ -15,19 +17,27 @@ function main({ pane, contextID, glslVersion }) {
 
   const PARAMS = {
     trailLength: 15,
-    render: 'Fluid',
-    canvasZoom: 1,
+    render: 'Fluid'
   };
 
+  let shouldSavePNG = false;
   let shouldDraw = false;
+
+  const canvas = document.createElement('canvas');
+  document.body.appendChild(canvas);
+  canvas.style.width = window.innerWidth
+  canvas.style.height = window.innerHeight
+  canvas.width = window.innerWidth * canvasZoom;
+  canvas.height = window.innerHeight * canvasZoom;
+
   // Scaling factor for touch interactions.
-  const TOUCH_FORCE_SCALE = 2;
+  const TOUCH_FORCE_SCALE = 2 * canvasZoom;
   // Approx avg num particles per px.
-  const PARTICLE_DENSITY = 0.1;
-  const MAX_NUM_PARTICLES = 100000;
+  const PARTICLE_DENSITY = 0.1 * canvasZoom;
+  const MAX_NUM_PARTICLES = 100000 * canvasZoom;
   // How long do the particles last before they are reset.
   // If we don't have then reset they tend to clump up.
-  const PARTICLE_LIFETIME = 1000;
+  const PARTICLE_LIFETIME = 1000 * canvasZoom;
   // How many steps to compute the zero pressure field.
   const NUM_JACOBI_STEPS = 3;
   const PRESSURE_CALC_ALPHA = -1;
@@ -38,15 +48,10 @@ function main({ pane, contextID, glslVersion }) {
   // Compute the velocity at a lower resolution to increase efficiency.
   const VELOCITY_SCALE_FACTOR = 8;
   // Put a speed limit on velocity, otherwise touch interactions get out of control.
-  const MAX_VELOCITY = 30;
+  const MAX_VELOCITY = 30 * canvasZoom;
   // We are storing abs position (2 components) and displacements (2 components) in this buffer.
   // This decreases error when rendering to half float.
   const POSITION_NUM_COMPONENTS = 4;
-
-  let shouldSavePNG = false;
-
-  const canvas = document.createElement('canvas');
-  document.body.appendChild(canvas);
 
   function calcNumParticles(width, height) {
     return Math.min(Math.ceil(width * height * (PARTICLE_DENSITY)), MAX_NUM_PARTICLES);
@@ -413,7 +418,7 @@ function main({ pane, contextID, glslVersion }) {
       },
       {
         name: 'u_increment',
-        value: -1 / PARAMS.trailLength,
+        value: -1 / (PARAMS.trailLength * canvasZoom),
         type: 'FLOAT',
       },
     ],
@@ -561,8 +566,8 @@ function main({ pane, contextID, glslVersion }) {
   }
   function onPointerMove(e) {
     if (!shouldDraw) return
-    const x = e.clientX * PARAMS.canvasZoom;
-    const y = e.clientY * PARAMS.canvasZoom;
+    const x = e.clientX * canvasZoom;
+    const y = e.clientY * canvasZoom;
     if (activeTouches[e.pointerId] === undefined) {
       activeTouches[e.pointerId] = {
         current: [x, y],
@@ -583,7 +588,7 @@ function main({ pane, contextID, glslVersion }) {
       output: velocityState,
       position1: [current[0], canvas.height - current[1]],
       position2: [last[0], canvas.height - last[1]],
-      thickness: 30,
+      thickness: 30 * (canvasZoom),
       endCaps: true,
     });
   }
@@ -597,10 +602,8 @@ function main({ pane, contextID, glslVersion }) {
   canvas.addEventListener('pointerout', onPointerStop);
   canvas.addEventListener('pointercancel', onPointerStop);
 
-  const ui = [];
-  ui.push(pane.addInput(PARAMS, 'canvasZoom', { min: 1, max: 10, step: 0.25, label: 'Canvas scale' }).on('change', onResize))
   ui.push(pane.addInput(PARAMS, 'trailLength', { min: 0, max: 100, step: 1, label: 'Trail Length' }).on('change', () => {
-    fadeTrails.setUniform('u_increment', -1 / PARAMS.trailLength);
+    fadeTrails.setUniform('u_increment', -1 / (PARAMS.trailLength * canvasZoom));
   }));
   ui.push(pane.addInput(PARAMS, 'render', {
     options: {
@@ -629,8 +632,8 @@ function main({ pane, contextID, glslVersion }) {
   function onResize() {
     canvas.style.width = window.innerWidth
     canvas.style.height = window.innerHeight
-    const width = canvas.width = window.innerWidth * PARAMS.canvasZoom;
-    const height = canvas.height = window.innerHeight * PARAMS.canvasZoom;
+    const width = canvas.width = window.innerWidth * canvasZoom;
+    const height = canvas.height = window.innerHeight * canvasZoom;
 
     // Resize composer.
     composer.resize([width, height]);
