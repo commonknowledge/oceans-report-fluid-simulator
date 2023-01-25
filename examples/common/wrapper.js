@@ -123,10 +123,10 @@
     'canvasZoom',
     {
       min: 1,
-      max: 5,
+      max: 3,
       step: 0.25,
       label: 'Canvas scale',
-      format: (v) => `${v * 100}%`,
+      format: (v) => `${v}x`,
     }).on('change', reloadExampleWithNewParams);
 
   settings.addInput(
