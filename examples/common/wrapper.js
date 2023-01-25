@@ -34,7 +34,14 @@
   const webGLSettings = {
     webGLVersion: isWebGL2Supported() ? 'WebGL 2' : 'WebGL 1',
     GLSLVersion: isWebGL2Supported() ? 'GLSL 3' : 'GLSL 1',
-    canvasZoom: 1
+    canvasZoom: 1,
+    TOUCH_FORCE_SCALE: 2,
+    PARTICLE_DENSITY: 0.1,
+    MAX_NUM_PARTICLES: 100000,
+    PARTICLE_LIFETIME: 1000,
+    MAX_VELOCITY: 30,
+    backgroundColor: { r: 0.98, g: 0.922, b: 0.843 },
+    particleColor: { r: 0, g: 0, b: 0.2 },
   };
   const availableWebGLVersions = { webgl1: 'WebGL 1' };
   const availableGLSLVersions = { glsl1: 'GLSL 1' };
@@ -65,7 +72,17 @@
       pane,
       contextID: webGLSettings.webGLVersion === 'WebGL 2' ? WEBGL2 : WEBGL1,
       glslVersion: webGLSettings.GLSLVersion === 'GLSL 3' ? GLSL3 : GLSL1,
-      canvasZoom: webGLSettings.canvasZoom
+      canvasZoom: webGLSettings.canvasZoom,
+      PARTICLE_LIFETIME: Math.ceil(webGLSettings.PARTICLE_LIFETIME),
+      // Scaling factor for touch interactions.
+      TOUCH_FORCE_SCALE: Math.ceil(webGLSettings.TOUCH_FORCE_SCALE * webGLSettings.canvasZoom),
+      // Approx avg num particles per px.
+      PARTICLE_DENSITY: webGLSettings.PARTICLE_DENSITY * webGLSettings.canvasZoom,
+      MAX_NUM_PARTICLES: Math.ceil(webGLSettings.MAX_NUM_PARTICLES * webGLSettings.canvasZoom),
+      // Put a speed limit on velocity, otherwise touch interactions get out of control.
+      MAX_VELOCITY: Math.ceil(webGLSettings.MAX_VELOCITY * webGLSettings.canvasZoom),
+      backgroundColor: webGLSettings.backgroundColor,
+      particleColor: webGLSettings.particleColor,
     }));
     canvas.addEventListener('gesturestart', disableZoom);
     canvas.addEventListener('gesturechange', disableZoom);
@@ -105,8 +122,54 @@
     webGLSettings,
     'canvasZoom',
     {
-      min: 0.25, max: 5, step: 0.25, label: 'Canvas scale'
+      min: 1,
+      max: 5,
+      step: 0.25,
+      label: 'Canvas scale',
+      format: (v) => `${v * 100}%`,
     }).on('change', reloadExampleWithNewParams);
+
+  settings.addInput(
+    webGLSettings,
+    'PARTICLE_LIFETIME'
+  ).on('change', reloadExampleWithNewParams);
+
+  settings.addInput(
+    webGLSettings,
+    'TOUCH_FORCE_SCALE'
+  ).on('change', reloadExampleWithNewParams);
+
+  settings.addInput(
+    webGLSettings,
+    'PARTICLE_DENSITY'
+  ).on('change', reloadExampleWithNewParams);
+
+  settings.addInput(
+    webGLSettings,
+    'MAX_NUM_PARTICLES'
+  ).on('change', reloadExampleWithNewParams);
+
+  settings.addInput(
+    webGLSettings,
+    'MAX_VELOCITY'
+  ).on('change', reloadExampleWithNewParams);
+
+  settings.addInput(
+    webGLSettings,
+    'backgroundColor',
+    {
+      color: { type: 'float' },
+    }
+  ).on('change', reloadExampleWithNewParams);
+
+  settings.addInput(
+    webGLSettings,
+    'particleColor',
+    {
+      color: { type: 'float' },
+    }
+  ).on('change', reloadExampleWithNewParams);
+
   // settings.addInput(webGLSettings, 'webGLVersion', {
   //   options: availableWebGLVersions,
   //   label: 'WebGL Version',

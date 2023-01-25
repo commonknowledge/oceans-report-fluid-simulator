@@ -1,5 +1,11 @@
 // Main is called from ../common/wrapper.js
-function main({ pane, contextID, glslVersion, canvasZoom }) {
+function main({ pane, contextID, glslVersion, canvasZoom, TOUCH_FORCE_SCALE,
+  PARTICLE_DENSITY,
+  MAX_NUM_PARTICLES,
+  PARTICLE_LIFETIME,
+  MAX_VELOCITY,
+  backgroundColor,
+  particleColor }) {
   const ui = [];
 
   const {
@@ -17,7 +23,8 @@ function main({ pane, contextID, glslVersion, canvasZoom }) {
 
   const PARAMS = {
     trailLength: 15,
-    render: 'Fluid'
+    render: 'Fluid',
+    thickness: 30
   };
 
   let shouldSavePNG = false;
@@ -30,25 +37,17 @@ function main({ pane, contextID, glslVersion, canvasZoom }) {
   canvas.width = window.innerWidth * canvasZoom;
   canvas.height = window.innerHeight * canvasZoom;
 
-  // Scaling factor for touch interactions.
-  const TOUCH_FORCE_SCALE = 2 * canvasZoom;
-  // Approx avg num particles per px.
-  const PARTICLE_DENSITY = 0.1 * canvasZoom;
-  const MAX_NUM_PARTICLES = 100000 * canvasZoom;
   // How long do the particles last before they are reset.
   // If we don't have then reset they tend to clump up.
-  const PARTICLE_LIFETIME = 1000 * canvasZoom;
   // How many steps to compute the zero pressure field.
   const NUM_JACOBI_STEPS = 3;
   const PRESSURE_CALC_ALPHA = -1;
   const PRESSURE_CALC_BETA = 0.25;
   // How many steps to move particles between each step of the simulation.
   // This helps to make the trails look smoother in cases where the particles are moving >1 px per step.
-  const NUM_RENDER_STEPS = 3;
+  const NUM_RENDER_STEPS = 3
   // Compute the velocity at a lower resolution to increase efficiency.
   const VELOCITY_SCALE_FACTOR = 8;
-  // Put a speed limit on velocity, otherwise touch interactions get out of control.
-  const MAX_VELOCITY = 30 * canvasZoom;
   // We are storing abs position (2 components) and displacements (2 components) in this buffer.
   // This decreases error when rendering to half float.
   const POSITION_NUM_COMPONENTS = 4;
@@ -430,8 +429,8 @@ function main({ pane, contextID, glslVersion, canvasZoom }) {
 			uniform sampler2D u_trailState;
 			out vec4 out_color;
 			void main() {
-				vec3 background = vec3(0.98, 0.922, 0.843);
-				vec3 particle = vec3(0, 0, 0.2);
+				vec3 background = vec3(${Object.values(backgroundColor).join(", ")});
+				vec3 particle = vec3(${Object.values(particleColor).join(", ")});
 				out_color = vec4(mix(background, particle, texture(u_trailState, v_uv).x), 1);
 			}
 		`,
@@ -588,7 +587,7 @@ function main({ pane, contextID, glslVersion, canvasZoom }) {
       output: velocityState,
       position1: [current[0], canvas.height - current[1]],
       position2: [last[0], canvas.height - last[1]],
-      thickness: 30 * (canvasZoom),
+      thickness: PARAMS.thickness * (canvasZoom),
       endCaps: true,
     });
   }
@@ -605,6 +604,8 @@ function main({ pane, contextID, glslVersion, canvasZoom }) {
   ui.push(pane.addInput(PARAMS, 'trailLength', { min: 0, max: 100, step: 1, label: 'Trail Length' }).on('change', () => {
     fadeTrails.setUniform('u_increment', -1 / (PARAMS.trailLength * canvasZoom));
   }));
+  // add input for 'thickness'
+  ui.push(pane.addInput(PARAMS, 'thickness', { min: 0, max: 100, step: 1, label: 'Thickness' }))
   ui.push(pane.addInput(PARAMS, 'render', {
     options: {
       Fluid: 'Fluid',
