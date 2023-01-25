@@ -122,7 +122,7 @@
     webGLSettings,
     'canvasZoom',
     {
-      min: 1,
+      min: 0.5,
       max: 3,
       step: 0.25,
       label: 'Canvas scale',

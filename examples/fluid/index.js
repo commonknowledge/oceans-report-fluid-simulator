@@ -34,8 +34,8 @@ function main({ pane, contextID, glslVersion, canvasZoom, TOUCH_FORCE_SCALE,
   document.body.appendChild(canvas);
   canvas.style.width = window.innerWidth
   canvas.style.height = window.innerHeight
-  canvas.width = window.innerWidth * canvasZoom;
-  canvas.height = window.innerHeight * canvasZoom;
+  canvas.width = Math.ceil(window.innerWidth * canvasZoom);
+  canvas.height = Math.ceil(window.innerHeight * canvasZoom);
 
   // How long do the particles last before they are reset.
   // If we don't have then reset they tend to clump up.
@@ -633,8 +633,8 @@ function main({ pane, contextID, glslVersion, canvasZoom, TOUCH_FORCE_SCALE,
   function onResize() {
     canvas.style.width = window.innerWidth
     canvas.style.height = window.innerHeight
-    const width = canvas.width = window.innerWidth * canvasZoom;
-    const height = canvas.height = window.innerHeight * canvasZoom;
+    const width = canvas.width = Math.ceil(window.innerWidth * canvasZoom);
+    const height = canvas.height = Math.ceil(window.innerHeight * canvasZoom);
 
     // Resize composer.
     composer.resize([width, height]);
